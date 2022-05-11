@@ -1,11 +1,14 @@
-# Application Template
-Simple application template that uses the ArcGIS API for JavaScript and Calcite Components.
+# The Thawing Arctic-Boreal Zone
 
+The Arctic-boreal zone is warming faster than anywhere else on Earth. 
+
+### Demo Application
+[The Thawing Arctic-Boreal Zone](https://geoxc-apps.bd.esri.com/Woodwell/ArcticThaw2/index.html)
+> #### WARNING: this is a work-in-progress...
+
+### The APIs used
  - [ArcGIS API for Javascript](https://developers.arcgis.com/javascript/latest/api-reference/)
  - [Calcite Components](https://developers.arcgis.com/calcite-design-system/components/)
-
-*WARNING*: this is a new and evolving effort... things might not work as expected.
-
 
 #### For questions about the demo web application:
 > John Grayson | Prototype Specialist | Geo Experience Center\
