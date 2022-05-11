@@ -337,7 +337,7 @@ class Application extends AppBase {
         frozenDaysTrendLayer.load()
       ]).then(([]) => {
 
-        const updateTrendLayerRendering = () => {
+        /*const updateTrendLayerRendering = () => {
 
           tempMeansTrendsLayer.set({
             opacity: 0.8,
@@ -384,7 +384,7 @@ class Application extends AppBase {
               }
             }
           });
-        };
+        };*/
         //updateTrendLayerRendering();
 
         resolve({tempMeansTrendsLayer, frozenDaysTrendLayer});
