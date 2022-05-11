@@ -1,0 +1,323 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+
+.calcite-theme-light,
+.calcite-theme-dark,
+.calcite-theme-app {
+  --calcite-ui-info: #ff2200;
+  --calcite-ui-brand: #fa3817;
+  --calcite-ui-brand-hover: #99220f;
+  --calcite-ui-brand-press: #ff9180;
+
+  /*
+  --calcite-ui-foreground-1: #026aa2;
+  --calcite-ui-background: #52a5cc;
+  --calcite-ui-background-2: #0a6680;
+  --calcite-ui-border-1: #efefef;
+  --calcite-ui-text-1: #ffffff;
+  --calcite-ui-text-2: #efefef;
+  --calcite-ui-text-3: #12bff2;
+  --calcite-ui-text-inverse: #fa3817;
+  */
+
+  --theme-blue-color: #439bff;
+  --theme-white-color: #ffffff;
+  --theme-red-color: #fa3817;
+
+  --theme-svg-icon-size: 16px;
+
+  /* https://css-tricks.com/change-color-of-svg-on-hover/ --- https://codepen.io/sosuke/pen/Pjoqqp */
+  --theme-svg-icon-blue-filter: invert(45%) sepia(81%) saturate(900%) hue-rotate(191deg) brightness(103%) contrast(101%);
+  --theme-svg-icon-white-filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(320deg) brightness(105%) contrast(102%);
+  --theme-svg-icon-red-filter: invert(28%) sepia(54%) saturate(4469%) hue-rotate(354deg) brightness(101%) contrast(96%);
+}
+
+
+.esri-widget,
+.esri-widget__heading,
+.esri-widget--button,
+.esri-menu,
+.esri-popup__button,
+.esri-popup__main-container,
+.esri-popup__header-container--button:hover,
+.esri-popup__pointer-direction,
+.esri-button {
+  color: var(--calcite-ui-text-2) !important;
+  background-color: var(--calcite-ui-foreground-1) !important;
+}
+
+.esri-search {
+  width: unset;
+}
+
+.toggle-panel[hidden] {
+  display: none;
+}
+
+header[slot="header"] {
+  z-index: 99;
+  padding: 0 1rem 0 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.application-title {
+  cursor: default;
+  transition: color 1s linear;
+}
+
+.application-title:hover {
+  color: var(--calcite-ui-brand);
+  transition: color 1s linear;
+}
+
+calcite-loader#app-loader {
+  align-self: center;
+  justify-self: center;
+  /*z-index: 1000;*/
+  /*top: calc(50vh - 112px) !important;*/
+}
+
+.esri-ui-corner calcite-loader {
+  pointer-events: none;
+  padding: 0;
+  right: 15px;
+}
+
+
+calcite-panel > div[slot="header-actions-end"] {
+  display: inline-flex;
+}
+
+calcite-notice {
+  z-index: 101;
+}
+
+calcite-block {
+  margin-bottom: 0;
+}
+
+#center-container {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(#439bff, #2b2b2b); /*#02334d);*/
+  /*background: radial-gradient(#12bff2, #02334d)*/;
+}
+
+#view-container:empty {
+  opacity: 0;
+}
+
+#view-container {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 1.0;
+  transition: opacity 1s linear;
+}
+
+#view-container canvas {
+  filter: saturate(1.2) drop-shadow(0 0 20px var(--theme-white-color));
+}
+
+.trend-color-ramp {
+  height: 1rem;
+  width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.temp-means-ramp {
+  background: linear-gradient(to right, var(--theme-blue-color) 0%, var(--theme-white-color) 50%, var(--theme-red-color) 100%);
+}
+
+.frozen-days-ramp {
+  background: linear-gradient(to right, var(--theme-red-color) 0%, var(--theme-white-color) 50%, var(--theme-blue-color) 100%);
+}
+
+calcite-tabs {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+calcite-tab {
+  overflow: hidden;
+}
+
+
+.info-panel {
+  height: 100px;
+}
+
+calcite-radio-group-item[disabled] {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.trend-panels .panel-content {
+  height: auto;
+}
+
+
+.temp-means-indicator[trend="increase"] {
+  color: var(--theme-red-color);
+}
+
+.temp-means-indicator[trend=""] {
+  color: var(--theme-white-color);
+}
+
+.temp-means-indicator[trend="decrease"] {
+  color: var(--theme-blue-color);
+}
+
+.frozen-days-indicator[trend="increase"] {
+  color: var(--theme-blue-color);
+}
+
+.frozen-days-indicator[trend=""] {
+  color: var(--theme-white-color);
+}
+
+.frozen-days-indicator[trend="decrease"] {
+  color: var(--theme-red-color);
+}
+
+.temp-means-icon,
+.frozen-days-icon {
+  display: block;
+  margin: auto;
+  width: var(--theme-svg-icon-size);
+  height: var(--theme-svg-icon-size);
+  background-size: var(--theme-svg-icon-size) var(--theme-svg-icon-size);
+  background-repeat: no-repeat;
+}
+
+.temp-means-icon {
+  background-image: url(../assets/extreme-heat.svg);
+}
+
+.frozen-days-icon {
+  background-image: url(../assets/snowflake.svg);
+}
+
+.trend-icon-s {
+  --theme-svg-icon-size: 16pt;
+}
+
+.trend-icon-m {
+  --theme-svg-icon-size: 20pt;
+}
+
+.trend-icon-l {
+  --theme-svg-icon-size: 32pt;
+}
+
+.trend-icon-xxl {
+  --theme-svg-icon-size: 55pt;
+  padding: 0 10px;
+  margin: auto 5px auto 5px;
+}
+
+.arrow-icon {
+  width: var(--theme-svg-icon-size);
+  height: var(--theme-svg-icon-size);
+}
+
+
+.temp-means-icon[trend="decrease"] {
+  filter: var(--theme-svg-icon-blue-filter);
+}
+
+.temp-means-icon[trend=""] {
+  filter: var(--theme-svg-icon-white-filter);
+}
+
+.temp-means-icon[trend="increase"] {
+  filter: var(--theme-svg-icon-red-filter);
+}
+
+.frozen-days-icon[trend="decrease"] {
+  filter: var(--theme-svg-icon-red-filter);
+}
+
+.frozen-days-icon[trend=""] {
+  filter: var(--theme-svg-icon-white-filter);
+}
+
+.frozen-days-icon[trend="increase"] {
+  filter: var(--theme-svg-icon-blue-filter);
+}
+
+.icon-blue {
+  filter: var(--theme-svg-icon-blue-filter);
+}
+
+.icon-white {
+  filter: var(--theme-svg-icon-white-filter);
+}
+
+.icon-red {
+  filter: var(--theme-svg-icon-red-filter);
+}
+
+
+calcite-block {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+calcite-block.layer-block {
+  border-left: solid 4px transparent;
+}
+
+calcite-block.layer-block[active] {
+  border-left-color: var(--calcite-ui-brand);
+}
+
+calcite-block[slot="control"] {
+  height: 100%;
+}
+
+calcite-radio-group-item {
+  --calcite-ui-background: var(--theme-white-color);
+}
+
+.trend-chart {
+  height: 250px !important;
+}
+
+.view-no-interaction {
+  pointer-events: none;
+}
+
+
+.slides-container {
+  box-shadow: none !important;
+}
+
+.slides-container calcite-button {
+  margin-left: 0.5rem;
+}
+
+.view-no-interaction .slides-container {
+  display: none;
+}
+
+img[scale="s"] {
+  height: 1rem;
+}
