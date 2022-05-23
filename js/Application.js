@@ -161,7 +161,6 @@ class Application extends AppBase {
         this.initializeNorthPole({view});
         this.initializeBathymetryLayer({view});
         this.initializeArcticBorealZone({view});
-
         this.initializeTrendLayers({view}).then(({tempMeansTrendsLayer, frozenDaysTrendLayer}) => {
           this.initializeTrendOptions({view, tempMeansTrendsLayer, frozenDaysTrendLayer});
           this.initializeAnalysisLocation({view, tempMeansTrendsLayer, frozenDaysTrendLayer});
@@ -317,6 +316,18 @@ class Application extends AppBase {
           !abzDetailedLayer.visible && (abzDetailedLayer.visible = true);
         }
       });
+
+      require(["esri/widgets/Legend"], (Legend) => {
+        let legend = new Legend({
+          view: view,
+          layerInfos:[
+            {layer:abzGeneralizedLayer, title:'Arctic Boreal Zone'}
+          ]
+        });
+        view.ui.add(legend, "top-right");
+      });
+
+
     });
 
   }
@@ -339,52 +350,52 @@ class Application extends AppBase {
 
         /*const updateTrendLayerRendering = () => {
 
-          tempMeansTrendsLayer.set({
-            opacity: 0.8,
-            bandId: 2,
-            interpolation: 'bilinear',
-            renderer: {
-              type: 'raster-stretch',
-              stretchType: 'min-max',
-              statistics: [{
-                min: -0.04,
-                max: 0.04,
-                avg: -0.24971247235947172,
-                stddev: 0.37222849013071047
-              }],
-              colorRamp: {
-                type: 'multipart',
-                colorRamps: [
-                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.blue, toColor: this.WOODWELL_COLORS.white},
-                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.red}
-                ]
-              }
-            }
-          });
+         tempMeansTrendsLayer.set({
+         opacity: 0.8,
+         bandId: 2,
+         interpolation: 'bilinear',
+         renderer: {
+         type: 'raster-stretch',
+         stretchType: 'min-max',
+         statistics: [{
+         min: -0.04,
+         max: 0.04,
+         avg: -0.24971247235947172,
+         stddev: 0.37222849013071047
+         }],
+         colorRamp: {
+         type: 'multipart',
+         colorRamps: [
+         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.blue, toColor: this.WOODWELL_COLORS.white},
+         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.red}
+         ]
+         }
+         }
+         });
 
-          frozenDaysTrendLayer.set({
-            opacity: 0.8,
-            bandId: 2,
-            interpolation: 'bilinear',
-            renderer: {
-              type: 'raster-stretch',
-              stretchType: 'min-max',
-              statistics: [{
-                min: -0.2,
-                max: 0.2,
-                avg: -0.24971247235947172,
-                stddev: 0.37222849013071047
-              }],
-              colorRamp: {
-                type: 'multipart',
-                colorRamps: [
-                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.red, toColor: this.WOODWELL_COLORS.white},
-                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.blue}
-                ]
-              }
-            }
-          });
-        };*/
+         frozenDaysTrendLayer.set({
+         opacity: 0.8,
+         bandId: 2,
+         interpolation: 'bilinear',
+         renderer: {
+         type: 'raster-stretch',
+         stretchType: 'min-max',
+         statistics: [{
+         min: -0.2,
+         max: 0.2,
+         avg: -0.24971247235947172,
+         stddev: 0.37222849013071047
+         }],
+         colorRamp: {
+         type: 'multipart',
+         colorRamps: [
+         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.red, toColor: this.WOODWELL_COLORS.white},
+         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.blue}
+         ]
+         }
+         }
+         });
+         };*/
         //updateTrendLayerRendering();
 
         resolve({tempMeansTrendsLayer, frozenDaysTrendLayer});
