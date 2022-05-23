@@ -317,7 +317,7 @@ class Application extends AppBase {
         }
       });
 
-      require(["esri/widgets/Legend"], (Legend) => {
+      /*require(["esri/widgets/Legend"], (Legend) => {
         let legend = new Legend({
           view: view,
           layerInfos:[
@@ -325,7 +325,7 @@ class Application extends AppBase {
           ]
         });
         view.ui.add(legend, "top-right");
-      });
+      });*/
 
 
     });
