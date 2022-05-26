@@ -295,12 +295,13 @@ class Application extends AppBase {
   }
 
   /**
+   * Ocean Grids: #43abeb - #335072
    *
    * @param view
    */
   initializeArcticBorealZone({view}) {
 
-    const transitionZoomLevel = 6.5;
+    const transitionZoomLevel = 5.5;
 
     const abzGeneralizedLayer = view.map.allLayers.find(layer => { return (layer.title === "Arctic Boreal Zone - (generalized)"); });
     const abzDetailedLayer = view.map.allLayers.find(layer => { return (layer.title === "Arctic Boreal Zone - (detailed)"); });
