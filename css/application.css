@@ -319,5 +319,9 @@ calcite-radio-group-item {
 }
 
 img[scale="s"] {
-  height: 1rem;
+  margin-left: 5px;
+  height: 1.1rem;
+  border-radius: 0.25rem;
 }
+
+

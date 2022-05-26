@@ -159,7 +159,7 @@ class Application extends AppBase {
         this.initializeTrendCharts();
         this.initializeCountriesLayer({view});
         this.initializeNorthPole({view});
-        this.initializeBathymetryLayer({view});
+        //this.initializeBathymetryLayer({view});
         this.initializeArcticBorealZone({view});
         this.initializeTrendLayers({view}).then(({tempMeansTrendsLayer, frozenDaysTrendLayer}) => {
           this.initializeTrendOptions({view, tempMeansTrendsLayer, frozenDaysTrendLayer});
@@ -203,7 +203,7 @@ class Application extends AppBase {
         const slidesContainer = document.createElement('div');
         slidesContainer.classList.add('slides-container');
         slidesContainer.append(...slideButtons);
-        view.ui.add(slidesContainer, {position: 'top-left', index: 0});
+        view.ui.add(slidesContainer, {position: 'top-right', index: 0});
 
         const introSlide = slides.find(slide => slide.title.text === 'North Pole');
         if (introSlide) {
@@ -228,16 +228,16 @@ class Application extends AppBase {
     ], (Graphic, GraphicsLayer, Point, geometryEngine) => {
 
       // NORTH POLE //
-      const northPole = new Point([180.0, 90.0]);
+      //const northPole = new Point([180.0, 90.0]);
       // NORTH POLE AREA //
-      const northPoleAreaGraphic = new Graphic({
+      /*const northPoleAreaGraphic = new Graphic({
         geometry: geometryEngine.geodesicBuffer(northPole, 610, 'kilometers'), // 710
         symbol: {
           type: 'simple-fill',
           color: 'rgba(150,150,150,0.85)',
           outline: {color: 'rgba(67,171,235,0.1)', width: 3.2}
         }
-      });
+      });*/
       const northPoleLabelGraphic = new Graphic({
         geometry: {type: 'point', x: 180.0, y: 90.0},
         symbol: {
@@ -257,7 +257,8 @@ class Application extends AppBase {
         }
       });
       const northPoleLayer = new GraphicsLayer({
-        graphics: [northPoleAreaGraphic, northPoleLabelGraphic]
+        //graphics: [northPoleAreaGraphic, northPoleLabelGraphic]
+        graphics: [northPoleLabelGraphic]
       });
 
       view.map.add(northPoleLayer, 10);
@@ -436,6 +437,10 @@ class Application extends AppBase {
         values: [_duration],
         isSlice: true
       }];
+
+      tempMeansTrendsLayer.refresh();
+      frozenDaysTrendLayer.refresh();
+
 
       this._watchUtils.whenFalseOnce(view, 'updating', () => {
         this._evented.emit('duration-change', {duration});
