@@ -159,7 +159,6 @@ class Application extends AppBase {
         this.initializeTrendCharts();
         this.initializeCountriesLayer({view});
         this.initializeNorthPole({view});
-        //this.initializeBathymetryLayer({view});
         this.initializeArcticBorealZone({view});
         this.initializeTrendLayers({view}).then(({tempMeansTrendsLayer, frozenDaysTrendLayer}) => {
           this.initializeTrendOptions({view, tempMeansTrendsLayer, frozenDaysTrendLayer});
@@ -278,23 +277,6 @@ class Application extends AppBase {
   }
 
   /**
-   *
-   * @param view
-   */
-  initializeBathymetryLayer({view}) {
-    const terrainLayer = view.map.allLayers.find(layer => { return (layer.title === "Terrain"); });
-    terrainLayer.load().then(() => {
-
-      terrainLayer.renderer = {
-        type: 'raster-shaded-relief',
-        hillshadeType: 'traditional', // multi-directional | traditional
-        scalingType: 'adjusted'
-      };
-
-    });
-  }
-
-  /**
    * Ocean Grids: #43abeb - #335072
    *
    * @param view
@@ -318,17 +300,6 @@ class Application extends AppBase {
           !abzDetailedLayer.visible && (abzDetailedLayer.visible = true);
         }
       });
-
-      /*require(["esri/widgets/Legend"], (Legend) => {
-        let legend = new Legend({
-          view: view,
-          layerInfos:[
-            {layer:abzGeneralizedLayer, title:'Arctic Boreal Zone'}
-          ]
-        });
-        view.ui.add(legend, "top-right");
-      });*/
-
 
     });
 
@@ -441,7 +412,6 @@ class Application extends AppBase {
 
       tempMeansTrendsLayer.refresh();
       frozenDaysTrendLayer.refresh();
-
 
       this._watchUtils.whenFalseOnce(view, 'updating', () => {
         this._evented.emit('duration-change', {duration});
