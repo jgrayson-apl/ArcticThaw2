@@ -475,7 +475,7 @@ class Application extends AppBase {
 
       const getTextSymbol = (text) => {
         return {
-          type: "text", text: text || 'lon: xxx.x | lat: xx.x', verticalAlignment: 'bottom', horizontalAlignment: 'center', size: 10.0, font: {family: 'Avenir Next LT Pro', weight: "600"}, material: {color: '#242424'}, /*halo: {color: '#424242', size: 0.4},*/
+          type: "text", text: text || 'lon: xxx.x | lat: xx.x', verticalAlignment: 'bottom', horizontalAlignment: 'center', size: 10.0, font: {family: 'Avenir Next LT Pro', weight: "bolder"}, material: {color: '#242424'}, /*halo: {color: '#424242', size: 0.4},*/
           background: {color: 'rgba(255,255,255,0.8)'}
         };
       };
