@@ -53,10 +53,6 @@ html, body {
   background-color: var(--calcite-ui-foreground-1) !important;
 }
 
-.esri-search {
-  width: unset;
-}
-
 .toggle-panel[hidden] {
   display: none;
 }
@@ -324,4 +320,19 @@ img[scale="s"] {
   border-radius: 0.25rem;
 }
 
+calcite-tabs {
+  min-height: 85px !important;
+}
 
+#address-tab {
+  position: absolute;
+}
+
+.esri-search {
+  margin-right: 30px;
+  width: auto;
+}
+
+.esri-search__suggestions-menu {
+  z-index: 99;
+}

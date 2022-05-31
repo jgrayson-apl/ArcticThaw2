@@ -29,6 +29,8 @@ class ImageryTileData extends EventTarget {
 
   static version = '0.0.1';
 
+  static START_YEAR = 2019;
+
   layer;
   variableName;
   dimensionName;
@@ -78,8 +80,8 @@ class ImageryTileData extends EventTarget {
         const result = identifyResults.value;
         resolve({
           duration,
-          startYear: (2019 - duration),
-          endYear: 2019,
+          startYear: (ImageryTileData.START_YEAR - duration),
+          endYear: ImageryTileData.START_YEAR,
           valid: (result != null),
           slope: result?.[0],
           start: result?.[1],

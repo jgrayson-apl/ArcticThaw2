@@ -78,27 +78,17 @@ class Application extends AppBase {
   configView(view) {
     return new Promise((resolve, reject) => {
       if (view) {
-        require([
-          'esri/widgets/Home',
-          'esri/widgets/Search',
-          'esri/widgets/LayerList',
-          'esri/widgets/Legend'
-        ], (Home, Search, LayerList, Legend) => {
+        require(['esri/widgets/Home', 'esri/widgets/Search', 'esri/widgets/LayerList', 'esri/widgets/Legend'], (Home, Search, LayerList, Legend) => {
 
           //
           // CONFIGURE VIEW SPECIFIC STUFF HERE //
           //
           view.set({
             //alphaCompositingEnabled: true,
-            qualityProfile: "high",
-            environment: {
+            qualityProfile: "high", environment: {
               background: {
-                type: "color",
-                color: [255, 252, 244, 0]
-              },
-              starsEnabled: false,
-              atmosphereEnabled: false,
-              lighting: {
+                type: "color", color: [255, 252, 244, 0]
+              }, starsEnabled: false, atmosphereEnabled: false, lighting: {
                 type: "virtual"
               }
             }
@@ -113,13 +103,6 @@ class Application extends AppBase {
            const legend = new Legend({ view: view });
            view.ui.add(legend, {position: 'bottom-left', index: 0});
            */
-
-          // SEARCH /
-          const search = new Search({
-            container: 'search-container',
-            view: view,
-            allPlaceholder: "Find place"
-          });
 
           // LAYER LIST //
           /*const layerList = new LayerList({
@@ -219,40 +202,24 @@ class Application extends AppBase {
    * @param view
    */
   initializeNorthPole({view}) {
-    require([
-      "esri/Graphic",
-      "esri/layers/GraphicsLayer",
-      "esri/geometry/Point",
-      "esri/geometry/geometryEngine"
-    ], (Graphic, GraphicsLayer, Point, geometryEngine) => {
+    require(["esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/Point", "esri/geometry/geometryEngine"], (Graphic, GraphicsLayer, Point, geometryEngine) => {
 
       // NORTH POLE //
       //const northPole = new Point([180.0, 90.0]);
       // NORTH POLE AREA //
       /*const northPoleAreaGraphic = new Graphic({
-        geometry: geometryEngine.geodesicBuffer(northPole, 610, 'kilometers'), // 710
-        symbol: {
-          type: 'simple-fill',
-          color: 'rgba(150,150,150,0.85)',
-          outline: {color: 'rgba(67,171,235,0.1)', width: 3.2}
-        }
-      });*/
+       geometry: geometryEngine.geodesicBuffer(northPole, 610, 'kilometers'), // 710
+       symbol: {
+       type: 'simple-fill',
+       color: 'rgba(150,150,150,0.85)',
+       outline: {color: 'rgba(67,171,235,0.1)', width: 3.2}
+       }
+       });*/
       const northPoleLabelGraphic = new Graphic({
-        geometry: {type: 'point', x: 180.0, y: 90.0},
-        symbol: {
-          type: "point-3d",
-          symbolLayers: [
-            {
-              type: "text",
-              text: `north pole`,
-              verticalAlignment: 'bottom',
-              horizontalAlignment: 'center',
-              size: 10.0,
-              font: {family: 'Avenir Next LT Pro', weight: "bold"},
-              material: {color: '#242424'},
-              background: {color: 'rgba(255,255,255,0.2)'}
-            }
-          ]
+        geometry: {type: 'point', x: 180.0, y: 90.0}, symbol: {
+          type: "point-3d", symbolLayers: [{
+            type: "text", text: `north pole`, verticalAlignment: 'bottom', horizontalAlignment: 'center', size: 10.0, font: {family: 'Avenir Next LT Pro', weight: "bold"}, material: {color: '#242424'}, background: {color: 'rgba(255,255,255,0.2)'}
+          }]
         }
       });
       const northPoleLayer = new GraphicsLayer({
@@ -288,10 +255,7 @@ class Application extends AppBase {
     const abzGeneralizedLayer = view.map.allLayers.find(layer => { return (layer.title === "Arctic Boreal Zone - (generalized)"); });
     const abzDetailedLayer = view.map.allLayers.find(layer => { return (layer.title === "Arctic Boreal Zone - (detailed)"); });
 
-    Promise.all([
-      abzGeneralizedLayer.load(),
-      abzDetailedLayer.load()
-    ]).then(() => {
+    Promise.all([abzGeneralizedLayer.load(), abzDetailedLayer.load()]).then(() => {
       view.watch('zoom', zoom => {
         //console.info(zoom);
         if (zoom < transitionZoomLevel) {
@@ -307,6 +271,8 @@ class Application extends AppBase {
 
   /**
    *
+   * https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-RasterStretchRenderer.html
+   *
    * @param {SceneView} view
    * @returns {Promise<{tempMeansTrendsLayer: FeatureLayer, frozenDaysTrendLayer:FeatureLayer}>}
    */
@@ -316,59 +282,78 @@ class Application extends AppBase {
       const tempMeansTrendsLayer = view.map.allLayers.find(layer => { return (layer.title === "Temp Means Trends"); });
       const frozenDaysTrendLayer = view.map.allLayers.find(layer => { return (layer.title === "Frozen Days Trends"); });
 
-      Promise.all([
-        tempMeansTrendsLayer.load(),
-        frozenDaysTrendLayer.load()
-      ]).then(([]) => {
+      Promise.all([tempMeansTrendsLayer.load(), frozenDaysTrendLayer.load()]).then(([]) => {
 
-        /*const updateTrendLayerRendering = () => {
+        const updateTrendLayerRendering = () => {
 
-         tempMeansTrendsLayer.set({
-         opacity: 0.8,
-         bandId: 2,
-         interpolation: 'bilinear',
-         renderer: {
-         type: 'raster-stretch',
-         stretchType: 'min-max',
-         statistics: [{
-         min: -0.04,
-         max: 0.04,
-         avg: -0.24971247235947172,
-         stddev: 0.37222849013071047
-         }],
-         colorRamp: {
-         type: 'multipart',
-         colorRamps: [
-         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.blue, toColor: this.WOODWELL_COLORS.white},
-         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.red}
-         ]
-         }
-         }
-         });
+          tempMeansTrendsLayer.set({
+            opacity: 0.65,
+            bandId: 2,
+            interpolation: 'bilinear',
+            renderer: {
+              type: 'raster-stretch',
+              //stretchType: 'standard-deviation',
+              //numberOfStandardDeviations: 1.5,
+              stretchType: 'min-max',
+              statistics: [{
+                min: -0.04,
+                max: 0.04,
+                avg: -0.24971247235947172,
+                stddev: 0.37222849013071047
+              }],
+              colorRamp: {
+                type: 'multipart',
+                colorRamps: [
+                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.blue, toColor: this.WOODWELL_COLORS.white},
+                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.red}
+                ]
+              }
+            }
+          });
 
-         frozenDaysTrendLayer.set({
-         opacity: 0.8,
-         bandId: 2,
-         interpolation: 'bilinear',
-         renderer: {
-         type: 'raster-stretch',
-         stretchType: 'min-max',
-         statistics: [{
-         min: -0.2,
-         max: 0.2,
-         avg: -0.24971247235947172,
-         stddev: 0.37222849013071047
-         }],
-         colorRamp: {
-         type: 'multipart',
-         colorRamps: [
-         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.red, toColor: this.WOODWELL_COLORS.white},
-         {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.blue}
-         ]
-         }
-         }
-         });
-         };*/
+          frozenDaysTrendLayer.set({
+            opacity: 0.65,
+            bandId: 2,
+            interpolation: 'bilinear',
+            renderer: {
+              type: 'raster-stretch',
+              // stretchType: 'standard-deviation',
+              // numberOfStandardDeviations: 1.5,
+              stretchType: 'min-max',
+              statistics: [{
+                min: -0.2,
+                max: 0.2,
+                avg: -0.24971247235947172,
+                stddev: 0.37222849013071047
+              }],
+              colorRamp: {
+                type: 'multipart',
+                colorRamps: [
+                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.red, toColor: this.WOODWELL_COLORS.white},
+                  {algorithm: 'hsv', fromColor: this.WOODWELL_COLORS.white, toColor: this.WOODWELL_COLORS.blue}
+                ]
+              }
+            }
+          });
+
+          // SAVE WEB SCENE //
+          view.on('double-click', () => {
+            if(confirm("Are you sure you want to update the Trend layer renderers?")) {
+              view.map.updateFrom(view, {environmentExcluded: true}).then(() => {
+                view.map.save({ignoreUnsupported: true});
+              }).catch(error => {
+                this.displayError(error);
+              });
+            }
+          });
+
+        };
+
+        /**
+         * NOTE: UNCOMMENT IF YOU'D LIKE TO APPLY RENDERERS DYNAMICALLY
+         *       AND ENABLE THE ABILITY TO SAVE/UPDATE THE WEB SCENE
+         *       WITH THESE NEW LAYER RENDERERS.
+         */
         //updateTrendLayerRendering();
 
         resolve({tempMeansTrendsLayer, frozenDaysTrendLayer});
@@ -397,17 +382,11 @@ class Application extends AppBase {
       _duration = duration;
 
       tempMeansTrendsLayer.multidimensionalDefinition = [{
-        variableName: 'Temperature Means Trends',
-        dimensionName: 'Duration',
-        values: [_duration],
-        isSlice: true
+        variableName: 'Temperature Means Trends', dimensionName: 'Duration', values: [_duration], isSlice: true
       }];
 
       frozenDaysTrendLayer.multidimensionalDefinition = [{
-        variableName: 'Frozen Days Trends',
-        dimensionName: 'Duration',
-        values: [_duration],
-        isSlice: true
+        variableName: 'Frozen Days Trends', dimensionName: 'Duration', values: [_duration], isSlice: true
       }];
 
       tempMeansTrendsLayer.refresh();
@@ -457,16 +436,22 @@ class Application extends AppBase {
     };
 
     // TREND LAYER VISIBILITY CHANGE //
-    const tempMeansLayerToggles = document.querySelector(`.layer-toggle[layer="temp-means"]`);
-    const frozenDaysLayerToggles = document.querySelector(`.layer-toggle[layer="frozen-days"]`);
-    tempMeansLayerToggles.addEventListener('calciteSwitchChange', () => {
-      setActiveTrendLayer(tempMeansLayerToggles.checked ? 'temp-means' : 'frozen-days');
-      frozenDaysLayerToggles.checked = !tempMeansLayerToggles.checked;
+
+    const layerOptions = document.getElementById('layer-options');
+    layerOptions.addEventListener('calciteRadioGroupChange', ({detail}) => {
+      setActiveTrendLayer(detail);
     });
-    frozenDaysLayerToggles.addEventListener('calciteSwitchChange', () => {
-      setActiveTrendLayer(frozenDaysLayerToggles.checked ? 'frozen-days' : 'temp-means');
-      tempMeansLayerToggles.checked = !frozenDaysLayerToggles.checked;
-    });
+
+    /*const tempMeansLayerToggles = document.querySelector(`.layer-toggle[layer="temp-means"]`);
+     const frozenDaysLayerToggles = document.querySelector(`.layer-toggle[layer="frozen-days"]`);
+     tempMeansLayerToggles.addEventListener('calciteSwitchChange', () => {
+     setActiveTrendLayer(tempMeansLayerToggles.checked ? 'temp-means' : 'frozen-days');
+     frozenDaysLayerToggles.checked = !tempMeansLayerToggles.checked;
+     });
+     frozenDaysLayerToggles.addEventListener('calciteSwitchChange', () => {
+     setActiveTrendLayer(frozenDaysLayerToggles.checked ? 'frozen-days' : 'temp-means');
+     tempMeansLayerToggles.checked = !frozenDaysLayerToggles.checked;
+     });*/
 
   }
 
@@ -477,10 +462,7 @@ class Application extends AppBase {
    * @param {FeatureLayer} frozenDaysTrendLayer
    */
   initializeAnalysisLocation({view, tempMeansTrendsLayer, frozenDaysTrendLayer}) {
-    require([
-      "esri/Graphic",
-      'esri/layers/GraphicsLayer'
-    ], (Graphic, GraphicsLayer) => {
+    require(["esri/Graphic", 'esri/layers/GraphicsLayer', 'esri/widgets/Search'], (Graphic, GraphicsLayer, Search) => {
 
       /*const iconSymbol = {
        type: "icon",
@@ -493,33 +475,20 @@ class Application extends AppBase {
 
       const getTextSymbol = (text) => {
         return {
-          type: "text",
-          text: text || 'lon: xxx.x | lat: xx.x',
-          verticalAlignment: 'bottom',
-          horizontalAlignment: 'center',
-          size: 10.0,
-          font: {family: 'Avenir Next LT Pro', weight: "600"},
-          material: {color: '#242424'},
-          /*halo: {color: '#424242', size: 0.4},*/
+          type: "text", text: text || 'lon: xxx.x | lat: xx.x', verticalAlignment: 'bottom', horizontalAlignment: 'center', size: 10.0, font: {family: 'Avenir Next LT Pro', weight: "600"}, material: {color: '#242424'}, /*halo: {color: '#424242', size: 0.4},*/
           background: {color: 'rgba(255,255,255,0.8)'}
         };
       };
       const verticalOffset = {screenLength: 33};
       const callout = {
-        type: "line",
-        size: 1.5,
-        color: this.WOODWELL_COLORS.white
+        type: "line", size: 1.5, color: this.WOODWELL_COLORS.white
         /*border: {color: this.WOODWELL_COLORS.location, size: 3.0}*/
       };
 
       const getLocationSymbol = (text) => {
         return {
-          type: "point-3d",
-          verticalOffset, callout,
-          symbolLayers: [
-            //iconSymbol,
-            getTextSymbol(text)
-          ]
+          type: "point-3d", verticalOffset, callout, symbolLayers: [//iconSymbol,
+            getTextSymbol(text)]
         };
       };
 
@@ -530,24 +499,22 @@ class Application extends AppBase {
       const updateLocationGraphic = () => {
         const locationLabel = _mapPoint ? `lon: ${ _mapPoint.longitude.toFixed(2) } lat: ${ _mapPoint.latitude.toFixed(2) }` : null;
         analysisLocationGraphic.set({
-          geometry: _mapPoint,
-          symbol: getLocationSymbol(locationLabel)
+          geometry: _mapPoint, symbol: getLocationSymbol(locationLabel)
         });
       };
 
       const analysisLocationCoordinatesInput = document.getElementById('analysis-location-coordinates-input');
 
-      const tempMeansIndicators = document.querySelectorAll('.temp-means-indicator');
-      const frozenDaysIndicators = document.querySelectorAll('.frozen-days-indicator');
-
-      const setIndicatorTrend = (indicators, getDataResults) => {
-        indicators.forEach(indicator => {
-          indicator.setAttribute('trend', (getDataResults?.slope == null) ? '' : (getDataResults?.slope > 0) ? 'increase' : 'decrease');
-          if (indicator.classList.contains('arrow-icon')) {
-            indicator.setAttribute('icon', (getDataResults?.slope == null) ? 'line-dashed' : (getDataResults?.slope > 0) ? 'arrow-bold-up' : 'arrow-bold-down');
-          }
-        });
-      };
+      //const tempMeansIndicators = document.querySelectorAll('.temp-means-indicator');
+      //const frozenDaysIndicators = document.querySelectorAll('.frozen-days-indicator');
+      /*const setIndicatorTrend = (indicators, getDataResults) => {
+       indicators.forEach(indicator => {
+       indicator.setAttribute('trend', (getDataResults?.slope == null) ? '' : (getDataResults?.slope > 0) ? 'increase' : 'decrease');
+       if (indicator.classList.contains('arrow-icon')) {
+       indicator.setAttribute('icon', (getDataResults?.slope == null) ? 'line-dashed' : (getDataResults?.slope > 0) ? 'arrow-bold-up' : 'arrow-bold-down');
+       }
+       });
+       };*/
 
       let _duration = this.getDuration();
       this._evented.on('duration-change', ({duration}) => {
@@ -570,20 +537,17 @@ class Application extends AppBase {
       this.clearAnalysisLocation = () => {
         _mapPoint = null;
         analysisLocationCoordinatesInput.value = null;
+        updateLocationGraphic();
+        updateLocationTrendAnalysis();
+        this.clearSearchTerm();
         this._evented.emit('location-change', {location: _mapPoint});
       };
 
       const tempMeansData = new ImageryTileData({
-        layer: tempMeansTrendsLayer,
-        variableName: 'Temperature Means Trends',
-        dimensionName: 'Duration',
-        durations: [60, 50, 40, 30, 20]
+        layer: tempMeansTrendsLayer, variableName: 'Temperature Means Trends', dimensionName: 'Duration', durations: [60, 50, 40, 30, 20]
       });
       const frozenDaysData = new ImageryTileData({
-        layer: frozenDaysTrendLayer,
-        variableName: 'Frozen Days Trends',
-        dimensionName: 'Duration',
-        durations: [40, 30, 20]
+        layer: frozenDaysTrendLayer, variableName: 'Frozen Days Trends', dimensionName: 'Duration', durations: [40, 30, 20]
       });
 
       // UPDATE LOCATION TREND ANALYSIS //
@@ -592,14 +556,14 @@ class Application extends AppBase {
 
           tempMeansData.getData({mapPoint: _mapPoint}).then((tempMeansResults) => {
             const currentTempMeansResult = tempMeansResults.find(results => results.duration === _duration);
-            setIndicatorTrend(tempMeansIndicators, currentTempMeansResult);
+            //setIndicatorTrend(tempMeansIndicators, currentTempMeansResult);
 
             this._evented.emit('temp-means-trends-change', {tempMeansTrends: tempMeansResults});
           });
 
           frozenDaysData.getData({mapPoint: _mapPoint}).then((frozenDaysResults) => {
             const currentFrozenDaysResult = frozenDaysResults.find(results => results.duration === _duration);
-            setIndicatorTrend(frozenDaysIndicators, currentFrozenDaysResult);
+            //setIndicatorTrend(frozenDaysIndicators, currentFrozenDaysResult);
 
             this._evented.emit('frozen-days-trends-change', {frozenDaysTrends: frozenDaysResults});
           });
@@ -610,16 +574,37 @@ class Application extends AppBase {
       };
 
       // USER VIEW CLICK //
-      view.on('click', this.setAnalysisLocation);
+      let viewClickHandle = null;
+      const searchLocationBtn = document.getElementById('search-location-btn');
+      searchLocationBtn.addEventListener('click', () => {
+        const isActive = searchLocationBtn.toggleAttribute('active');
+        if (isActive) {
+          this.clearSearchTerm();
+          viewClickHandle = view.on('click', this.setAnalysisLocation);
+        } else {
+          viewClickHandle && viewClickHandle.remove();
+        }
+        view.container.style.cursor = isActive ? 'crosshair' : 'default';
+        searchLocationBtn.setAttribute('icon-end', isActive ? 'check' : 'blank');
+      });
 
-      // SAVE WEB SCENE //
-      /*view.on('double-click', () => {
-       view.map.updateFrom(view, {environmentExcluded: true}).then(() => {
-       view.map.save({ignoreUnsupported: true});
-       }).catch(error => {
-       this.displayError(error);
-       });
-       });*/
+      // SEARCH /
+      const search = new Search({
+        container: 'search-container', view: view, locationEnabled: false, popupEnabled: false, resultGraphicEnabled: false, allPlaceholder: "Find place", goToOverride: (view, goToParams) => {
+          return view.goTo({...goToParams.target, scale: view.scale});
+        }
+      });
+      search.on('select-result', ({result: {feature}}) => {
+        this.setAnalysisLocation({mapPoint: feature.geometry});
+      });
+      this.clearSearchTerm = () => {
+        search.searchTerm = null;
+      };
+
+      const analysisLocationCoordinatesClearBtn = document.getElementById('analysis-location-coordinates-clear-btn');
+      analysisLocationCoordinatesClearBtn.addEventListener('click', () => {
+        this.clearAnalysisLocation();
+      });
 
     });
   }
@@ -635,92 +620,49 @@ class Application extends AppBase {
       Chart.defaults.font.family = 'Avenir Next LT Pro';
 
       const defaultTitle = {
-        display: true,
-        color: '#efefef',
-        font: {weight: 'normal', size: 15}
+        display: true, color: '#efefef', font: {weight: 'normal', size: 15}
       };
 
       const defaultLegend = {
-        display: true,
-        onClick: null,
-        labels: {
-          pointStyle: 'line',
-          usePointStyle: true,
-          color: '#efefef',
-          filter: (item, data) => {
-            console.info(item, data);
+        display: true, onClick: null, labels: {
+          pointStyle: 'line', usePointStyle: true, color: '#efefef', filter: (item, data) => {
             return data.datasets.length;
           }
         }
       };
 
       const defaultGridLines = {
-        color: '#666666',
-        drawBorder: true
+        color: '#666666', drawBorder: true
       };
 
       const defaultDataset = {
-        fill: false,
-        borderWidth: 1.5
+        fill: false, borderWidth: 1.5
       };
 
       const tempMeansTrendChartNode = document.getElementById('temp-means-trend-chart');
       const tempMeansChart = new Chart(tempMeansTrendChartNode, {
-        type: 'line',
-        data: {
+        type: 'line', data: {
           datasets: []
-        },
-        options: {
-          animations: false,
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
+        }, options: {
+          animations: false, responsive: true, maintainAspectRatio: false, plugins: {
             title: {
-              ...defaultTitle,
-              text: 'Air Temperature'
-            },
-            legend: defaultLegend
-          },
-          scales: {
+              ...defaultTitle, text: 'Air Temperature'
+            }, legend: defaultLegend
+          }, scales: {
             y: {
-              type: "linear",
-              display: true,
-              title: {
-                display: true,
-                text: 'Temperature °C',
-                color: '#efefef',
-                font: {size: 11}
-              },
-              ticks: {
-                padding: 5,
-                precision: 0,
-                stepSize: 1,
-                color: '#efefef',
-                callback: function (value, index, values) { return `${ value.toFixed(1) }°`; }
-              },
-              grid: defaultGridLines
-            },
-            x: {
-              type: 'linear',
-              position: 'bottom',
-              min: 1950,
-              max: 2020,
-              title: {
-                display: true,
-                text: 'Trend Duration',
-                color: '#efefef',
-                font: {size: 12}
-              },
-              ticks: {
-                padding: 5,
-                stepSize: 10,
-                color: '#efefef',
-                font: {size: 11},
-                callback: function (value) {
+              type: "linear", display: true, title: {
+                display: true, text: 'Temperature °C', color: '#efefef', font: {size: 11}
+              }, ticks: {
+                padding: 5, precision: 0, stepSize: 1, color: '#efefef', callback: function (value, index, values) { return `${ value.toFixed(1) }°`; }
+              }, grid: defaultGridLines
+            }, x: {
+              type: 'linear', position: 'bottom', min: 1950, max: 2020, title: {
+                display: true, text: 'Trend Duration', color: '#efefef', font: {size: 12}
+              }, ticks: {
+                padding: 5, stepSize: 10, color: '#efefef', font: {size: 11}, callback: function (value) {
                   return value.toFixed(0);
                 }
-              },
-              grid: defaultGridLines
+              }, grid: defaultGridLines
             }
           }
         }
@@ -728,60 +670,28 @@ class Application extends AppBase {
 
       const frozenDaysTrendChartNode = document.getElementById('frozen-days-trend-chart');
       const frozenDaysChart = new Chart(frozenDaysTrendChartNode, {
-        type: 'line',
-        data: {
+        type: 'line', data: {
           datasets: []
-        },
-        options: {
-          animations: false,
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
+        }, options: {
+          animations: false, responsive: true, maintainAspectRatio: false, plugins: {
             title: {
-              ...defaultTitle,
-              text: 'Days with Frozen Ground'
-            },
-            legend: defaultLegend
-          },
-          scales: {
+              ...defaultTitle, text: 'Days with Frozen Ground'
+            }, legend: defaultLegend
+          }, scales: {
             y: {
-              type: "linear",
-              display: true,
-              title: {
-                display: true,
-                text: 'Frozen Days',
-                color: '#efefef',
-                font: {size: 11}
-              },
-              ticks: {
-                padding: 5,
-                precision: 0,
-                stepSize: 30,
-                color: '#efefef'
-              },
-              grid: defaultGridLines
-            },
-            x: {
-              type: 'linear',
-              position: 'bottom',
-              title: {
-                display: true,
-                text: 'Trend Duration',
-                color: '#efefef',
-                font: {size: 12}
-              },
-              min: 1950,
-              max: 2020,
-              ticks: {
-                padding: 5,
-                stepSize: 10,
-                color: '#efefef',
-                font: {size: 11},
-                callback: function (value) {
+              type: "linear", display: true, title: {
+                display: true, text: 'Frozen Days', color: '#efefef', font: {size: 11}
+              }, ticks: {
+                padding: 5, precision: 0, stepSize: 30, color: '#efefef'
+              }, grid: defaultGridLines
+            }, x: {
+              type: 'linear', position: 'bottom', title: {
+                display: true, text: 'Trend Duration', color: '#efefef', font: {size: 12}
+              }, min: 1950, max: 2020, ticks: {
+                padding: 5, stepSize: 10, color: '#efefef', font: {size: 11}, callback: function (value) {
                   return value.toFixed(0);
                 }
-              },
-              grid: defaultGridLines
+              }, grid: defaultGridLines
             }
           }
         }
@@ -799,14 +709,7 @@ class Application extends AppBase {
         const pointBorderColor = trendColor.toCss(true);
 
         return {
-          ...defaultDataset,
-          borderColor,
-          borderWidth,
-          pointRadius,
-          pointBorderColor,
-          pointBackgroundColor,
-          label: `${ trendInfo.duration } yrs`,
-          data: [{x: trendInfo.startYear, y: trendInfo.start}, {x: trendInfo.endYear, y: trendInfo.end}]
+          ...defaultDataset, borderColor, borderWidth, pointRadius, pointBorderColor, pointBackgroundColor, label: `${ trendInfo.duration } yrs`, data: [{x: trendInfo.startYear, y: trendInfo.start}, {x: trendInfo.endYear, y: trendInfo.end}]
         };
 
       };
