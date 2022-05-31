@@ -352,7 +352,7 @@ class Application extends AppBase {
         /**
          * NOTE: UNCOMMENT IF YOU'D LIKE TO APPLY RENDERERS DYNAMICALLY
          *       AND ENABLE THE ABILITY TO SAVE/UPDATE THE WEB SCENE
-         *       WITH THESE NEW LAYER RENDERERS.
+         *       WITH THESE NEW LAYER RENDERER SETTINGS.
          */
         //updateTrendLayerRendering();
 
